@@ -3,7 +3,7 @@ Nextstrain pipeline for genomic epidemiology of dengue virus (serotypes 1-4). Th
 
 This repository contains the essential files to create a dengue virus [nextstrain build](https://nextstrain.org/). By using this pipeline users can to perform genomic epidemiology analyses and visualize phylogeographic results to track dengue virus spread using genomic data and their associated metadata.
 
-![alt text](https://github.com/InstitutoTodosPelaSaude/flexpipe/blob/main/overview.png)
+![alt text](https://github.com/InstitutoTodosPelaSaude/flexpipe-dengue/blob/main/overview.png)
 Nextstrain panel with results overview
 
 ## Getting started
