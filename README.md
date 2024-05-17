@@ -30,7 +30,7 @@ Below are the parameters for each dengue virus serotype, which need to be adjust
 
 | serotype | mask_5prime | mask_3prime | clock_rate | clock_stddev |
 |:--------:|:-----------:|:-----------:|:----------:|:------------:|
-|  DenV1   |      94     |     462     |  0.0006    |   0.00004    |
+|  DenV1   |      94     |     462     |  0.00060    |   0.00004    |
 |  DenV2   |      96     |     451     |  0.00078   |   0.00004    |
 |  DenV3   |      94     |     440     |  0.00068   |   0.00004    |
 |  DenV4   |     101     |     384     |  0.00066   |   0.00004    |
