@@ -1,9 +1,9 @@
 {
-  "title": "Add your project title here",
+  "title": "Dengue sequecing project ITpS (DENV-X)",
   "build_url": "https://github.com/InstitutoTodosPelaSaude/flexpipe",
   "maintainers": [
-    {"name": "Add your name here",
-     "url": "Add your webpage URL here"}
+    {"name": "Anderson Brito (ITpS)",
+     "url": "https://www.itps.org.br/"}
   ],
   "colorings": [
     {
@@ -22,13 +22,33 @@
       "type": "categorical"
     },
     {
+      "key": "regionbr",
+      "title": "Region Brazil",
+      "type": "categorical"
+    },
+    {
       "key": "location",
       "title": "Location",
       "type": "categorical"
     },
     {
-      "key": "host_type",
-      "title": "Host",
+      "key": "genotype",
+      "title": "Genotype",
+      "type": "categorical"
+    },
+    {
+      "key": "major_lineage",
+      "title": "Major lineage",
+      "type": "categorical"
+    },
+    {
+      "key": "minor_lineage",
+      "title": "Minor lineage",
+      "type": "categorical"
+    },
+    {
+      "key": "subm_lab",
+      "title": "Source",
       "type": "categorical"
     },
     {
@@ -39,6 +59,7 @@
   ],
   "geo_resolutions": [
     "country",
+    "regionbr",
     "division",
     "location"
   ],
@@ -51,10 +72,14 @@
   },
   "filters": [
     "country",
+    "regionbr",
     "division",
     "location",
+    "genotype",
+    "major_lineage",
+    "minor_lineage",
     "author",
-    "host_type"
+    "subm_lab"
   ],
   "panels": [
     "tree",

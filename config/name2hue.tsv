@@ -1,9 +1,20 @@
 category	hue
-Nordeste	40
-Centro-Oeste	0
-Sudeste	270
-Sul	190
-Human	200
-Mosquito	150
-Non-human primate	40
+Brazil-Northeast	40
+Brazil-Center West	0
+Brazil-Southeast	270
+Brazil-South	190
+Brazil-North	120
 Other	Greys
+1I	270
+1II	120
+1III	40
+1IV	20
+1V	210
+1VI	300
+2I	270
+2II	120
+2III	40
+2IV	20
+2V	210
+2VI	300
+Unassigned	Greys

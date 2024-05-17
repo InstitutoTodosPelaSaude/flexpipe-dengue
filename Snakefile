@@ -14,17 +14,17 @@ rule prepare:
 # Define file names
 rule files:
 	params:
-		contextual_sequences = "data/sequences.fasta",
-		new_sequences = "data/new_sequences.fasta",
-		aligned = "config/aligned.fasta",
-		metadata = "data/metadata.tsv",
-		new_metadata = "data/new_metadata.xlsx",
+		contextual_sequences = "data/DenV_genomes_ncbi.fasta",
+		new_sequences = "data/new_genomes.fasta",
+		metadata = "data/table_ncbi_s3.tsv",
+		new_metadata = "data/DenV_itps_metadata.tsv",
+		geoscheme = "config/geoscheme.tsv",
 		cache = "config/cache_coordinates.tsv",
 		lat_longs = "config/latlongs.tsv",
 		colscheme = "config/name2hue.tsv",
 		keep = "config/keep.txt",
 		ignore = "config/ignore.txt",
-		reference = "config/reference.gb",
+		reference = "config/reference_denv2.gb",
 		clades = "config/clades.tsv",
 		auspice_config = "config/auspice_config.json",
 
@@ -32,17 +32,17 @@ rule files:
 # Define parameters
 rule parameters:
 	params:
-		mask_5prime = 142,
-		mask_3prime = 548,
-		bootstrap = 1, # default = 1, but ideally it should be >= 100
+		mask_5prime = 96,
+		mask_3prime = 451,
+		bootstrap = 1,
 		model = "GTR",
-		root = "JF912185", # set one or more genomes to root the phylogeny
-		clock_rate = 0.0003,
-		clock_std_dev = 0.0001,
+		root = "least-squares",
+		clock_rate = 0.00078,
+		clock_std_dev = 0.00004,
 
 rule options:
 	params:
-		threads = 1
+		threads = 8
 
 
 options = rules.options.params
@@ -62,7 +62,7 @@ rule add_sequences:
 		include = files.keep,
 		exclude = files.ignore
 	output:
-		sequences = temp("results/temp_dataset.fasta")
+		sequences = "results/temp_dataset.fasta"
 	shell:
 		"""
 		python scripts/add_new_sequences.py \
@@ -86,8 +86,8 @@ rule process_metadata:
 		metadata1 = files.metadata,
 		metadata2 = files.new_metadata
 	output:
-		final_metadata = "results/final_metadata.tsv",
-		final_sequences = "results/final_dataset.fasta",
+		metadata = "results/temp_metadata.tsv",
+		sequences = "results/temp_dataset2.fasta",
 		rename = "results/trees/rename.tsv"
 	shell:
 		"""
@@ -96,9 +96,29 @@ rule process_metadata:
 			--metadata1 {input.metadata1} \
 			--metadata2 {input.metadata2} \
 			--time-var "date" \
-			--output1 {output.final_metadata} \
-			--output2 {output.final_sequences} \
+			--output1 {output.metadata} \
+			--output2 {output.sequences} \
 			--output3 {output.rename}
+		"""
+
+
+rule geoscheme:
+	message:
+		"""
+		Processing {input.filtered_metadata} to:
+		- Reformat columns according to geographic scheme in {input.geoscheme}
+		"""
+	input:
+		filtered_metadata = rules.process_metadata.output.metadata,
+		geoscheme = files.geoscheme
+	output:
+		final_metadata = "data/metadata.tsv"
+	shell:
+		"""
+		python3 scripts/apply_geoscheme.py \
+			--metadata {input.filtered_metadata} \
+			--geoscheme {input.geoscheme} \
+			--output {output.final_metadata}
 		"""
 
 
@@ -108,7 +128,7 @@ rule coordinates:
 		Searching for coordinates (latitudes and longitudes) for samples in {input.metadata}
 		"""
 	input:
-		metadata = rules.process_metadata.output.final_metadata,
+		metadata = rules.geoscheme.output.final_metadata,
 		cache = files.cache
 	params:
 		columns = "country division location"
@@ -133,28 +153,36 @@ rule colours:
 		Assigning colour scheme for defined columns in {input.matrix}
 		"""
 	input:
-		matrix = rules.process_metadata.output.final_metadata,
+		matrix = rules.geoscheme.output.final_metadata,
 		scheme = files.colscheme,
 	params:
-		host = "host_type host",
-		geo = "region division location",
+		category1 = "genotype major_lineage",
+		category2 = "genotype minor_lineage",
+		category3 = "regionbr division",
 	output:
-		colours1 = temp("config/col_hosts.tsv"),
-		colours2 = temp("config/col_geo.tsv"),
+		colours1 = temp("config/col_category1.tsv"),
+		colours2 = temp("config/col_category2.tsv"),
+		colours3 = temp("config/col_category3.tsv"),
 		colour_scheme = "config/colour_scheme.tsv",
 	shell:
 		"""
 		python scripts/colour_maker.py \
 			--input {input.matrix} \
 			--colours {input.scheme} \
-			--levels {params.host} \
+			--levels {params.category1} \
 			--output {output.colours1}
 
 		python scripts/colour_maker.py \
 			--input {input.matrix} \
 			--colours {input.scheme} \
-			--levels {params.geo} \
+			--levels {params.category2} \
 			--output {output.colours2}
+
+		python scripts/colour_maker.py \
+			--input {input.matrix} \
+			--colours {input.scheme} \
+			--levels {params.category3} \
+			--output {output.colours3}
 
 		python scripts/multi_merger.py \
 			--path "./config" \
@@ -177,8 +205,7 @@ rule align:
 		    - gaps relative to reference are considered real
 		"""
 	input:
-		sequences = rules.process_metadata.output.final_sequences,
-		aligned = files.aligned,
+		sequences = rules.process_metadata.output.sequences,
 		reference = files.reference,
 	params:
 		threads = options.threads
@@ -260,7 +287,8 @@ rule tree:
 			-s {input.alignment} \
 			-b {params.bootstrap} \
 			-nt {params.threads} \
-			-m {params.model}
+			-m {params.model} \
+			-redo
 
 		mv results/alignments/masked.fasta.treefile {output.tree}
 		"""
@@ -305,7 +333,7 @@ rule refine:
 	input:
 		tree = rules.rename.output.new_tree,
 		alignment = rules.mask.output.alignment,
-		metadata = rules.process_metadata.output.final_metadata
+		metadata = rules.geoscheme.output.final_metadata
 	params:
 		root = parameters.root,
 		coalescent = "skyline",
@@ -328,7 +356,7 @@ rule refine:
 			--timetree \
 			--coalescent {params.coalescent} \
 			--date-confidence \
-			--clock-filter-iqd 4 \
+			--clock-filter-iqd 10 \
 			--clock-rate {params.clock_rate} \
 			--clock-std-dev {params.clock_std_dev} \
 			--divergence-units {params.unit} \
@@ -389,7 +417,7 @@ rule traits:
 	message: "Inferring ancestral traits for {params.columns!s}"
 	input:
 		tree = rules.refine.output.tree,
-		metadata = rules.process_metadata.output.final_metadata,
+		metadata = rules.geoscheme.output.final_metadata,
 	params:
 		columns = "division location host_type"
 	output:
@@ -432,7 +460,7 @@ rule export:
 	message: "Exporting data files for for auspice"
 	input:
 		tree = rules.refine.output.tree,
-		metadata = rules.process_metadata.output.final_metadata,
+		metadata = rules.geoscheme.output.final_metadata,
 		branch_lengths = rules.refine.output.node_data,
 		traits = rules.traits.output.node_data,
 		nt_muts = rules.ancestral.output.node_data,

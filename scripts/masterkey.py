@@ -3,7 +3,7 @@
 # Created by: Anderson Brito
 # Email: andersonfbrito@gmail.com
 # Release date: 2020-05-24
-# Last update: 2021-06-22
+## Last update: 2023-07-04
 
 from Bio import Phylo
 from Bio import SeqIO
@@ -13,7 +13,7 @@ import json
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="Rename taxa names in tree and sequence files, and prune trees according to list provided by the user",
+        description="Perform various operations on different types of input files, including FASTA, NWK, TSV, and JSON files. The script provides options to rename taxa names in tree and sequence files, as well as prune trees based on a user-provided list. The output is a filtered file based on the specified action (keep, remove, or rename).",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("--input", required=True, help="FASTA, NWK, TSV or JSON input file to be processed")
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     input = args.input
     format = args.format[0]
-    list = args.list
+    list_entries = args.list
     action = args.action[0]
     index = args.index
     output = args.output
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # output = path + 'output_ren.tsv'
 
 
-    targets = [target.strip() for target in open(list, "r").readlines() if target[0] not in ['\n', '#']]
+    targets = [target.strip() for target in open(list_entries, "r").readlines() if target[0] not in ['\n', '#']]
     if format == 'tree':
         tree = Phylo.read(input, 'newick')
         print('Starting tree file processing...')
@@ -52,7 +52,7 @@ if __name__ == '__main__':
                     oldName = line.split("\t")[0]
                     newName = line.split("\t")[1].strip()
                     if str(clade.name) == oldName:
-                        # print('Renaming ' + oldName + ' as ' + newName)
+                        print('Renaming ' + oldName + ' as ' + newName)
                         clade.name = newName
 
             Phylo.write([tree], output, 'newick')
@@ -213,15 +213,18 @@ if __name__ == '__main__':
         df1.fillna('', inplace=True)
 
         if index == None:
-            df2 = pd.read_csv(list, encoding='utf-8', sep='\t', dtype=str)
+            df2 = pd.read_csv(list_entries, encoding='utf-8', sep='\t', dtype=str)
             index = df2.columns.tolist()[0]
         else:
-            values = [x.strip() for x in open(list).readlines()]
+            values = [x.strip() for x in open(list_entries).readlines()]
             data = {index: values}
             df2 = pd.DataFrame.from_dict(data)
 
-        filter_target = [x for x in df2[index].tolist() if x in df1[index].tolist()]
-        not_found = [x for x in df2[index].tolist() if x not in df1[index].tolist()]
+        list_index1 = df1[index].tolist()
+        list_index2 = df2[index].tolist()
+
+        filter_target = list(set(list_index2) & set(list_index1))
+        not_found = list(set(list_index2) - set(list_index1))
 
         c = 1
         if len(not_found) > 0:

@@ -1,0 +1,26 @@
+purpose	filter	value	filter2	value2	sample_size	start	end
+focus	serotype	DenV1	major_lineage	1III_A	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1III_B	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1IV_A	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1IV_B	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1IV_C	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_A	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_B	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_C	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_D	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_E	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_F	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_G	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_H	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_J	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1I_K	10	2000-01-01	
+focus	serotype	DenV1	major_lineage	1VI_A	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1VI_B	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_A	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_B	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_C	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_D	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_E	200	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_F	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	1V_G	20	2000-01-01	
+focus	serotype	DenV1	major_lineage	Unassigned	10	2000-01-01	
