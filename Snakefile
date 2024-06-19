@@ -15,7 +15,7 @@ rule prepare:
 rule files:
 	params:
 		contextual_sequences = "data/DenV_genomes_ncbi.fasta",
-		new_sequences = "data/new_genomes.fasta",
+		new_sequences = "data/DenV1_new_genomes.fasta",
 		metadata = "data/table_ncbi_s3.tsv",
 		new_metadata = "data/DenV_itps_metadata.tsv",
 		geoscheme = "config/geoscheme.tsv",
@@ -24,7 +24,7 @@ rule files:
 		colscheme = "config/name2hue.tsv",
 		keep = "config/keep.txt",
 		ignore = "config/ignore.txt",
-		reference = "config/reference_denv2.gb",
+		reference = "config/reference_denv1.gb",
 		clades = "config/clades.tsv",
 		auspice_config = "config/auspice_config.json",
 
@@ -32,12 +32,12 @@ rule files:
 # Define parameters
 rule parameters:
 	params:
-		mask_5prime = 96,
-		mask_3prime = 451,
+		mask_5prime = 94,
+		mask_3prime = 462,
 		bootstrap = 1,
 		model = "GTR",
 		root = "least-squares",
-		clock_rate = 0.00078,
+		clock_rate = 0.00060,
 		clock_std_dev = 0.00004,
 
 rule options:
@@ -156,13 +156,11 @@ rule colours:
 		matrix = rules.geoscheme.output.final_metadata,
 		scheme = files.colscheme,
 	params:
-		category1 = "genotype major_lineage",
-		category2 = "genotype minor_lineage",
-		category3 = "regionbr division",
+		category1 = "genotype lineage",
+		category2 = "regionbr division",
 	output:
 		colours1 = temp("config/col_category1.tsv"),
 		colours2 = temp("config/col_category2.tsv"),
-		colours3 = temp("config/col_category3.tsv"),
 		colour_scheme = "config/colour_scheme.tsv",
 	shell:
 		"""
@@ -177,12 +175,6 @@ rule colours:
 			--colours {input.scheme} \
 			--levels {params.category2} \
 			--output {output.colours2}
-
-		python scripts/colour_maker.py \
-			--input {input.matrix} \
-			--colours {input.scheme} \
-			--levels {params.category3} \
-			--output {output.colours3}
 
 		python scripts/multi_merger.py \
 			--path "./config" \
@@ -492,6 +484,7 @@ rule clean:
 		"config/colour_scheme.tsv",
 		"config/latlongs.tsv",
 		"config/aligned.fasta.ref.fasta",
+		"data/metadata.tsv",
 		"results",
 		"auspice"
 
