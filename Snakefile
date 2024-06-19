@@ -411,7 +411,7 @@ rule traits:
 		tree = rules.refine.output.tree,
 		metadata = rules.geoscheme.output.final_metadata,
 	params:
-		columns = "division location host_type"
+		columns = "country division location host_type lineage"
 	output:
 		node_data = "results/trees/traits.json",
 	shell:

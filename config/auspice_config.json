@@ -1,19 +1,9 @@
 {
   "title": "Dengue sequecing project ITpS (DENV-X)",
-  "build_url": "https://github.com/InstitutoTodosPelaSaude/flexpipe-dengue",
+  "build_url": "https://github.com/InstitutoTodosPelaSaude/flexpipe",
   "maintainers": [
     {"name": "Anderson Brito (ITpS)",
      "url": "https://www.itps.org.br/"}
-  ],
-  "data_provenance": [
-    {
-      "name": "ITpS",
-      "url": "https://www.itps.org.br/"
-    },
-    {
-      "name": "NCBI",
-      "url": "https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/"
-    }
   ],
   "colorings": [
     {
@@ -47,13 +37,8 @@
       "type": "categorical"
     },
     {
-      "key": "major_lineage",
-      "title": "Major lineage",
-      "type": "categorical"
-    },
-    {
-      "key": "minor_lineage",
-      "title": "Minor lineage",
+      "key": "lineage",
+      "title": "Lineage",
       "type": "categorical"
     },
     {
@@ -86,8 +71,7 @@
     "division",
     "location",
     "genotype",
-    "major_lineage",
-    "minor_lineage",
+    "lineage",
     "author",
     "subm_lab"
   ],
