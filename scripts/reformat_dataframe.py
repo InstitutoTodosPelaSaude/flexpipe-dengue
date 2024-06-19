@@ -224,6 +224,7 @@ if __name__ == '__main__':
             ref_col, ref_val, target_col, fixed_val = df2.loc[id2, 'reference_column'], df2.loc[id2, 'reference_value'], df2.loc[id2, 'target_column'], df2.loc[id2, 'fixed_value']
             # print(ref_col, ref_val, target_col, fixed_val)
             # print(ref_val, df1[ref_col].tolist())
+
             if ref_val in df1[ref_col].tolist():
                 df1.loc[df1[ref_col] == ref_val, target_col] = fixed_val
                 if target_col not in found:

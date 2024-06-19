@@ -12,6 +12,7 @@ from Bio import SeqIO
 import pandas as pd
 import time
 import argparse
+import numpy as np
 
 pd.set_option('display.max_columns', 500)
 
@@ -290,6 +291,9 @@ if __name__ == '__main__':
             outputDF = pd.concat(frames, ignore_index=True)
 
     # print(outputDF)
+
+    # fix lineage information
+    outputDF['lineage'] = np.where(outputDF['minor_lineage'] == 'Unassigned', outputDF['major_lineage'], outputDF['minor_lineage'])
 
     # # fix date format
     # outputDF['date'] = pd.to_datetime(outputDF['date']) 
